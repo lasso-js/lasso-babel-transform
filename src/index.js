@@ -6,7 +6,7 @@ const util = require('util');
 const fs = require('fs');
 const merge = require('lodash/object/merge');
 // fetch the .babelrc file. Do it only once because its fixed.
-const defaultOptions = JSON.parse(fs.readFileSync(path.join(__dirname, '../.babelrc')));
+const defaultOptions = JSON.parse(fs.readFileSync(path.join(__dirname, '.babelrc')));
 
 const BabelStream = function(filename) {
     stream.Transform.call(this);

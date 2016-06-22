@@ -1,51 +1,51 @@
 {
-  "name": "lasso-babel-transform",
-  "version": "1.0.0",
-  "description": "",
-  "main": "src/index.js",
-  "scripts": {
-    "test": "npm run mocha && npm run lint",
-    "lint": "jshint src/",
-    "mocha": "mocha --timeout 5000 --reporter spec",
-    "cover": "rm -rf ./coverage && istanbul cover _mocha -- --timeout 5000 -R spec ./test/*.js",
-    "coverreport": "open ./coverage/lcov-report/index.html"
-  },
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "babel-core": "^6.7.7",
-    "chai": "^3.5.0",
-    "chai-as-promised": "^5.3.0",
-    "istanbul": "^0.4.3",
-    "jshint": "^2.9.2",
-    "mocha": "^2.4.5",
-    "mocha-cobertura-reporter": "^1.0.4",
-    "mocha-istanbul": "^0.2.0"
-  },
-  "dependencies": {
-    "babel-core": "^6.0.14",
-    "lodash": "^3.10.1",
-    "object-assign": "^4.0.0"
-  },
-  "peerDependencies": {
-    "babel-plugin-transform-es2015-template-literals": "^6.6.0",
-    "babel-plugin-transform-es2015-literals": "^6.3.13",
-    "babel-plugin-transform-es2015-function-name": "^6.3.13",
-    "babel-plugin-transform-es2015-arrow-functions": "^6.3.13",
-    "babel-plugin-transform-es2015-block-scoped-functions": "^6.3.13",
-    "babel-plugin-transform-es2015-classes": "^6.6.0",
-    "babel-plugin-transform-es2015-object-super": "^6.3.13",
-    "babel-plugin-transform-es2015-shorthand-properties": "^6.3.13",
-    "babel-plugin-transform-es2015-computed-properties": "^6.3.13",
-    "babel-plugin-transform-es2015-duplicate-keys": "^6.6.0",
-    "babel-plugin-transform-es2015-for-of": "^6.6.0",
-    "babel-plugin-transform-es2015-sticky-regex": "^6.3.13",
-    "babel-plugin-transform-es2015-unicode-regex": "^6.3.13",
-    "babel-plugin-check-es2015-constants": "^6.3.13",
-    "babel-plugin-transform-es2015-spread": "^6.3.13",
-    "babel-plugin-transform-es2015-parameters": "^6.6.0",
-    "babel-plugin-transform-es2015-destructuring": "^6.6.0",
-    "babel-plugin-transform-es2015-block-scoping": "^6.6.0",
-    "babel-plugin-transform-es2015-typeof-symbol": "^6.6.0"
-  }
+    "name": "lasso-babel-transform",
+    "version": "0.0.1",
+    "description": "",
+    "main": "src/index.js",
+    "scripts": {
+        "test": "npm run mocha && npm run lint",
+        "lint": "jshint src/",
+        "mocha": "mocha --timeout 5000 --reporter spec",
+        "cover": "rm -rf ./coverage && istanbul cover _mocha -- --timeout 5000 -R spec ./test/*.js",
+        "coverreport": "open ./coverage/lcov-report/index.html"
+    },
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "babel-core": "^6.7.7",
+        "chai": "^3.5.0",
+        "chai-as-promised": "^5.3.0",
+        "istanbul": "^0.4.3",
+        "jshint": "^2.9.2",
+        "mocha": "^2.4.5",
+        "mocha-cobertura-reporter": "^1.0.4",
+        "mocha-istanbul": "^0.2.0"
+    },
+    "dependencies": {
+        "babel-core": "^6.0.14",
+        "lodash": "^3.10.1",
+        "object-assign": "^4.0.0"
+    },
+    "peerDependencies": {
+        "babel-plugin-transform-es2015-template-literals": "^6.6.0",
+        "babel-plugin-transform-es2015-literals": "^6.3.13",
+        "babel-plugin-transform-es2015-function-name": "^6.3.13",
+        "babel-plugin-transform-es2015-arrow-functions": "^6.3.13",
+        "babel-plugin-transform-es2015-block-scoped-functions": "^6.3.13",
+        "babel-plugin-transform-es2015-classes": "^6.6.0",
+        "babel-plugin-transform-es2015-object-super": "^6.3.13",
+        "babel-plugin-transform-es2015-shorthand-properties": "^6.3.13",
+        "babel-plugin-transform-es2015-computed-properties": "^6.3.13",
+        "babel-plugin-transform-es2015-duplicate-keys": "^6.6.0",
+        "babel-plugin-transform-es2015-for-of": "^6.6.0",
+        "babel-plugin-transform-es2015-sticky-regex": "^6.3.13",
+        "babel-plugin-transform-es2015-unicode-regex": "^6.3.13",
+        "babel-plugin-check-es2015-constants": "^6.3.13",
+        "babel-plugin-transform-es2015-spread": "^6.3.13",
+        "babel-plugin-transform-es2015-parameters": "^6.6.0",
+        "babel-plugin-transform-es2015-destructuring": "^6.6.0",
+        "babel-plugin-transform-es2015-block-scoping": "^6.6.0",
+        "babel-plugin-transform-es2015-typeof-symbol": "^6.6.0"
+    }
 }

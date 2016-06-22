@@ -61,7 +61,6 @@ exports.scanDir = function(autoTestDir, run, options) {
                 itFunc(`[${name}] `, function(done) {
                     autoTest(name, dir, run, options, done);
                 });
-
             });
     });
 };

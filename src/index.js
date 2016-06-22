@@ -1,42 +1,55 @@
-var loadBabelConfig = require('./util/loadBabelConfig');
-var nodePath = require('path');
-var extend = require('raptor-util/extend');
+'use strict';
+const stream = require('stream');
+const babel = require('babel-core');
+const path = require('path');
+const util = require('util');
+const fs = require('fs');
+const merge = require('lodash/object/merge');
+// fetch the .babelrc file. Do it only once because its fixed.
+const defaultOptions = JSON.parse(fs.readFileSync(path.join(__dirname, '../.babelrc')));
 
-var babel;
+const BabelStream = function(filename) {
+    stream.Transform.call(this);
 
-function getBabel() {
-    if (!babel) {
-        babel = require('babel-core');
+    let rootDir = path.dirname(filename);
+    if (path.extname(filename) !== '.js' && path.extname(filename) !== '.es6') {
+        this.data = '';
+        this.options = null;
+        return;
     }
-    return babel;
-}
-
-
-exports.createTransform = function(transformConfig) {
-    return function(code, lassoContext) {
-        var filename = lassoContext.filename;
-        if (!filename) {
-            // This shouldn't be the case
-            return code;
+    while (!fs.existsSync(path.join(rootDir, '.babelrc'))) {
+        const newRootDir = path.dirname(rootDir);
+        if (newRootDir === rootDir) {
+            rootDir = undefined;
+            break;
         }
+        rootDir = newRootDir;
+    }
+    if (rootDir) {
+        this.options = merge({}, defaultOptions, JSON.parse(fs.readFileSync(path.join(rootDir, '.babelrc'))));
+        this.options.filename = path.relative(rootDir, filename);
+        this.options.babelrc = false;
+    }
+    this.data = '';
+};
 
-        var dir = nodePath.dirname(filename);
-        var babelConfig = loadBabelConfig(dir);
+util.inherits(BabelStream, stream.Transform);
 
-        if (!babelConfig) {
-            // No babel config... Don't do anything
-            return code;
-        }
+BabelStream.prototype._transform = function(buf, enc, callback) {
+    this.data += buf;
+    callback();
+};
 
-        var babel = getBabel();
-        var babelOptions = {};
-        extend(babelOptions, babelConfig);
-        babelOptions.babelrc = false; // Specify whether or not to use .babelrc and .babelignore files.
-        babelOptions.filename = filename;
-        babelOptions.filenameRelative = nodePath.relative(babelOptions.sourceRoot, filename);
+BabelStream.prototype._flush = function(callback) {
+    if (this.options) {
+        const result = babel.transform(this.data, this.options);
+        this.push(result.code);
+    } else {
+        this.push(this.data);
+    }
+    callback();
+};
 
-        var result = babel.transform(code, babelOptions);
-        // ...
-        return result.code;
-    };
+module.exports = function(filename) {
+    return new BabelStream(filename);
 };

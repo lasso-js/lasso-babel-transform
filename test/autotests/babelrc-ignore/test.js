@@ -1,10 +1,13 @@
+var chai = require('chai');
 var expect = require('chai').expect;
 
-exports.getTransformConfig = function() {
-    return {};
-};
-
-exports.test = function(transform, helpers) {
-    expect(transform('excluded/foo.js')).to.equal(helpers.readFileSync('excluded/foo.js'));
-    expect(transform('included/foo.js')).to.not.equal(helpers.readFileSync('included/foo.js'));
+exports.test = function(transform, helpers, done) {
+    Promise.all([
+        transform('excluded/foo.js'),
+        transform('included/foo.js')
+    ]).then((response) => {
+        expect(response[0]).to.equal(helpers.readFileSync('excluded/foo.js'));
+        expect(response[1]).to.not.equal(helpers.readFileSync('included/foo.js'));
+        done();
+    }).catch(err => done(err));
 };

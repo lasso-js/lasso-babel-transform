@@ -7,28 +7,30 @@ require('chai').config.includeStack = true;
 
 var lassoBabelTransform = require('../');
 
-describe('lasso-babel-transform' , function() {
+describe('lasso-babel-transform', function() {
     require('./autotest').scanDir(
         nodePath.join(__dirname, 'autotests'),
-        function (dir, helpers, done) {
+        function(dir, helpers, done) {
             var test = require(nodePath.join(dir, 'test.js'));
 
-            var transformConfig = test.getTransformConfig() || {};
-            var transform = lassoBabelTransform.createTransform(transformConfig);
-
-            function transformWrapper(path, lassoContext) {
+            function transformWrapper(path) {
                 var filename = nodePath.resolve(dir, path);
-                if (!lassoContext) {
-                    lassoContext = {};
-                }
-
-                lassoContext.filename = filename;
-                var code = fs.readFileSync(filename, { encoding: 'utf8' });
-                var transformedCode = transform(code, lassoContext);
-                return transformedCode;
+                var transformedStream = lassoBabelTransform(filename);
+                var fileStream = fs.createReadStream(filename);
+                return new Promise((resolve, reject) => {
+                    fileStream.pipe(transformedStream);
+                    var str = '';
+                    transformedStream.on('data', function(chunk) {
+                        if(chunk) {
+                            str += chunk;
+                        }
+                    });
+                    transformedStream.on('end', function() {
+                        resolve(str);
+                    });
+                });
             }
 
-            test.test(transformWrapper, helpers);
-            done();
+            test.test(transformWrapper, helpers, done);
         });
 });

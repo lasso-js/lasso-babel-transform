@@ -46,5 +46,8 @@
         "babel-plugin-transform-es2015-destructuring": "^6.6.0",
         "babel-plugin-transform-es2015-block-scoping": "^6.6.0",
         "babel-plugin-transform-es2015-typeof-symbol": "^6.6.0"
+    },
+    "publishConfig": {
+        "registry": "https://registry.npmjs.org/"
     }
 }

@@ -1,7 +1,7 @@
 {
     "name": "lasso-babel-transform",
-    "version": "0.0.1",
-    "description": "",
+    "version": "0.0.2",
+    "description": "Lasso.js transform that uses Babel to transpile ES6 code to ES5.",
     "main": "src/index.js",
     "scripts": {
         "test": "npm run mocha && npm run lint",
@@ -10,7 +10,11 @@
         "cover": "rm -rf ./coverage && istanbul cover _mocha -- --timeout 5000 -R spec ./test/*.js",
         "coverreport": "open ./coverage/lcov-report/index.html"
     },
-    "author": "",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/lasso-js/lasso-babel-transform.git"
+    },
+    "author": "lassojs",
     "license": "ISC",
     "devDependencies": {
         "babel-core": "^6.7.7",
@@ -49,5 +53,15 @@
     },
     "publishConfig": {
         "registry": "https://registry.npmjs.org/"
+    },
+    "keywords": [
+        "lasso",
+        "babel",
+        "ES6",
+        "ES5",
+        "transpile"
+    ],
+    "bugs": {
+        "url": "https://github.com/lasso-js/lasso-babel-transform/issues"
     }
 }

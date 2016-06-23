@@ -1,15 +1,14 @@
-lasso-babel-transform
-=====================
+# lasso-babel-transform
 
 Lasso.js transform that uses Babel to transpile ES6 code to ES5. This transform will only transpile code that for where a `.babelrc` file is found by searching up the directory tree to the root.
 
-# Installation
+## Installation
 
 ```bash
 npm install lasso-babel-transform --save
 ```
 
-# Usage
+## Usage
 
 ```javascript
 require('lasso').configure({

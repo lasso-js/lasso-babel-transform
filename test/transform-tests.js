@@ -11,10 +11,11 @@ describe('lasso-babel-transform', function() {
         nodePath.join(__dirname, 'autotests-transform'),
         function(dir, helpers, done) {
             var test = require(nodePath.join(dir, 'test.js'));
+            var config = test.config || {};
 
             function transformWrapper(path) {
                 const filename = nodePath.resolve(dir, path);
-                const transformFunc = lassoBabelTransform.createTransform({});
+                const transformFunc = lassoBabelTransform.createTransform(config);
                 var input = fs.readFileSync(filename, { encoding: 'utf8' });
                 var output = transformFunc(input, { filename });
                 return output;

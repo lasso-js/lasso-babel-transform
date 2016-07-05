@@ -22,13 +22,26 @@ module.exports = {
     id: __filename,
     stream: false,
     createTransform(transformConfig) {
+
+        var extensions = transformConfig.extensions;
+
+        if (!extensions) {
+            extensions = ['.js', '.es6'];
+        }
+
+        extensions = extensions.reduce((lookup, ext) => {
+            if (ext.charAt(0) !== '.') {
+                ext = '.' + ext;
+            }
+            lookup[ext] = true;
+            return lookup;
+        }, {});
+
         return function lassoBabelTransform(code, lassoContext) {
             var filename = lassoContext.filename;
 
-            if (!filename) {
+            if (!filename || !extensions.hasOwnProperty(path.extname(filename))) {
                 // This shouldn't be the case
-                return code;
-            } else if (path.extname(filename) !== '.js' && path.extname(filename) !== '.es6') {
                 return code;
             }
 
@@ -38,9 +51,13 @@ module.exports = {
             var rootDir;
 
             if (rootPackage.babel) {
+                // babel supports putting the babel config in the package's root `package.json`
+                // file. If we find that then we will enable the Babel transform for this package
                 babelOptions = Object.assign({}, defaultOptions, rootPackage.babel);
                 rootDir = rootPackage.__dirname;
             } else {
+                // Didn't find a babel config in the root `package.json` for the package so we will
+                // instead search up until we reach the root directory of the package
                 let curDir = path.dirname(filename);
                 while (true) {
                     let babelrcPath = path.join(curDir, '.babelrc');

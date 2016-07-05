@@ -1,55 +1,78 @@
 'use strict';
-const stream = require('stream');
-const babel = require('babel-core');
 const path = require('path');
-const util = require('util');
 const fs = require('fs');
-const merge = require('lodash/object/merge');
+const cachingFS = require('lasso-caching-fs');
+const stripJsonComments = require('strip-json-comments');
+
 // fetch the .babelrc file. Do it only once because its fixed.
 const defaultOptions = JSON.parse(fs.readFileSync(path.join(__dirname, '.babelrc')));
+var lassoPackageRoot = require('lasso-package-root');
+var readOptions = { encoding: 'utf8' };
 
-const BabelStream = function(filename) {
-    stream.Transform.call(this);
+var babel;
 
-    let rootDir = path.dirname(filename);
-    if (path.extname(filename) !== '.js' && path.extname(filename) !== '.es6') {
-        this.data = '';
-        this.options = null;
-        return;
+function getBabel() {
+    if (!babel) {
+        babel = require('babel-core');
     }
-    while (!fs.existsSync(path.join(rootDir, '.babelrc'))) {
-        const newRootDir = path.dirname(rootDir);
-        if (newRootDir === rootDir) {
-            rootDir = undefined;
-            break;
-        }
-        rootDir = newRootDir;
+    return babel;
+}
+
+module.exports = {
+    id: __filename,
+    stream: false,
+    createTransform(transformConfig) {
+        return function lassoBabelTransform(code, lassoContext) {
+            var filename = lassoContext.filename;
+
+            if (!filename) {
+                // This shouldn't be the case
+                return code;
+            } else if (path.extname(filename) !== '.js' && path.extname(filename) !== '.es6') {
+                return code;
+            }
+
+            let babelOptions = null;
+
+            var rootPackage = lassoPackageRoot.getRootPackage(path.dirname(filename));
+            var rootDir;
+
+            if (rootPackage.babel) {
+                babelOptions = Object.assign({}, defaultOptions, rootPackage.babel);
+                rootDir = rootPackage.__dirname;
+            } else {
+                let curDir = path.dirname(filename);
+                while (true) {
+                    let babelrcPath = path.join(curDir, '.babelrc');
+
+                    if (cachingFS.existsSync(path.join(curDir, '.babelrc'))) {
+                        var babelrcJson = stripJsonComments(fs.readFileSync(babelrcPath, readOptions));
+                        babelOptions = Object.assign({}, defaultOptions, JSON.parse(babelrcJson));
+                        rootDir = curDir;
+                        break;
+                    } else if (curDir === rootPackage.__dirname) {
+                        break;
+                    } else {
+                        let parentDir = path.dirname(curDir);
+                        if (!parentDir || parentDir === curDir) {
+                            break;
+                        }
+                        curDir = parentDir;
+                    }
+                }
+            }
+
+            if (!babelOptions) {
+                // No babel config... Don't do anything
+                return code;
+            }
+
+            babelOptions.filename = path.relative(rootDir, filename);
+            babelOptions.babelrc = false;
+
+            var babel = getBabel();
+            var result = babel.transform(code, babelOptions);
+            return result.code;
+        };
     }
-    if (rootDir) {
-        this.options = merge({}, defaultOptions, JSON.parse(fs.readFileSync(path.join(rootDir, '.babelrc'))));
-        this.options.filename = path.relative(rootDir, filename);
-        this.options.babelrc = false;
-    }
-    this.data = '';
-};
-
-util.inherits(BabelStream, stream.Transform);
-
-BabelStream.prototype._transform = function(buf, enc, callback) {
-    this.data += buf;
-    callback();
-};
-
-BabelStream.prototype._flush = function(callback) {
-    if (this.options) {
-        const result = babel.transform(this.data, this.options);
-        this.push(result.code);
-    } else {
-        this.push(this.data);
-    }
-    callback();
-};
-
-module.exports = function(filename) {
-    return new BabelStream(filename);
 };

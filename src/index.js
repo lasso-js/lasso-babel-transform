@@ -4,8 +4,6 @@ const fs = require('fs');
 const cachingFS = require('lasso-caching-fs');
 const stripJsonComments = require('strip-json-comments');
 
-// fetch the .babelrc file. Do it only once because its fixed.
-const defaultOptions = JSON.parse(fs.readFileSync(path.join(__dirname, '.babelrc')));
 var lassoPackageRoot = require('lasso-package-root');
 var readOptions = { encoding: 'utf8' };
 
@@ -53,7 +51,7 @@ module.exports = {
             if (rootPackage.babel) {
                 // babel supports putting the babel config in the package's root `package.json`
                 // file. If we find that then we will enable the Babel transform for this package
-                babelOptions = Object.assign({}, defaultOptions, rootPackage.babel);
+                babelOptions = Object.assign({}, rootPackage.babel);
                 rootDir = rootPackage.__dirname;
             } else {
                 // Didn't find a babel config in the root `package.json` for the package so we will
@@ -64,7 +62,7 @@ module.exports = {
 
                     if (cachingFS.existsSync(path.join(curDir, '.babelrc'))) {
                         var babelrcJson = stripJsonComments(fs.readFileSync(babelrcPath, readOptions));
-                        babelOptions = Object.assign({}, defaultOptions, JSON.parse(babelrcJson));
+                        babelOptions = JSON.parse(babelrcJson);
                         rootDir = curDir;
                         break;
                     } else if (curDir === rootPackage.__dirname) {

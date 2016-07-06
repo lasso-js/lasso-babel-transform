@@ -33,7 +33,7 @@
     "lasso-package-root": "^1.0.0",
     "strip-json-comments": "^2.0.1"
   },
-  "peerDependencies": {
+  "devDependencies": {
     "babel-plugin-transform-es2015-template-literals": "^6.6.0",
     "babel-plugin-transform-es2015-literals": "^6.3.13",
     "babel-plugin-transform-es2015-function-name": "^6.3.13",

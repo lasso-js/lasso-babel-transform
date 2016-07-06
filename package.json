@@ -1,6 +1,6 @@
 {
   "name": "lasso-babel-transform",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Lasso.js transform that uses Babel to transpile ES6 code to ES5.",
   "main": "src/index.js",
   "scripts": {
@@ -16,23 +16,6 @@
   },
   "author": "lassojs",
   "license": "ISC",
-  "devDependencies": {
-    "babel-core": "^6.7.7",
-    "chai": "^3.5.0",
-    "chai-as-promised": "^5.3.0",
-    "istanbul": "^0.4.3",
-    "jshint": "^2.9.2",
-    "lasso": "^2.5.5",
-    "mocha": "^2.4.5",
-    "mocha-cobertura-reporter": "^1.0.4",
-    "mocha-istanbul": "^0.2.0"
-  },
-  "dependencies": {
-    "babel-core": "^6.0.14",
-    "lasso-caching-fs": "^1.0.1",
-    "lasso-package-root": "^1.0.0",
-    "strip-json-comments": "^2.0.1"
-  },
   "devDependencies": {
     "babel-plugin-transform-es2015-template-literals": "^6.6.0",
     "babel-plugin-transform-es2015-literals": "^6.3.13",
@@ -53,6 +36,12 @@
     "babel-plugin-transform-es2015-destructuring": "^6.6.0",
     "babel-plugin-transform-es2015-block-scoping": "^6.6.0",
     "babel-plugin-transform-es2015-typeof-symbol": "^6.6.0"
+  },
+  "dependencies": {
+    "babel-core": "^6.0.14",
+    "lasso-caching-fs": "^1.0.1",
+    "lasso-package-root": "^1.0.0",
+    "strip-json-comments": "^2.0.1"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"

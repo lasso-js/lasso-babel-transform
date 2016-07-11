@@ -22,7 +22,7 @@ require('lasso').configure({
     require: {
         transforms: [
             {
-                transform: 'lasso-babel-transform'
+                transform: 'lasso-babel-transform',
                 config: {
                     extensions: ['.js', '.es6'] // Enabled file extensions. Default: ['.js', '.es6']
                 }
@@ -68,23 +68,23 @@ _my-module/.babelrc:_
 You will need to install any Babel plugins enabled in your `.babelrc` file. For example:
 
 ```bash
-npm install transform-es2015-template-literals --save
-npm install transform-es2015-literals --save
-npm install transform-es2015-function-name --save
-npm install transform-es2015-arrow-functions --save
-npm install transform-es2015-block-scoped-functions --save
-npm install transform-es2015-classes --save
-npm install transform-es2015-object-super --save
-npm install transform-es2015-shorthand-properties --save
-npm install transform-es2015-duplicate-keys --save
-npm install transform-es2015-computed-properties --save
-npm install transform-es2015-for-of --save
-npm install transform-es2015-sticky-regex --save
-npm install transform-es2015-unicode-regex --save
-npm install check-es2015-constants --save
-npm install transform-es2015-spread --save
-npm install transform-es2015-parameters --save
-npm install transform-es2015-destructuring --save
-npm install transform-es2015-block-scoping --save
-npm install transform-es2015-typeof-symbol --save
+npm install babel-plugin-transform-es2015-template-literals --save
+npm install babel-plugin-transform-es2015-literals --save
+npm install babel-plugin-transform-es2015-function-name --save
+npm install babel-plugin-transform-es2015-arrow-functions --save
+npm install babel-plugin-transform-es2015-block-scoped-functions --save
+npm install babel-plugin-transform-es2015-classes --save
+npm install babel-plugin-transform-es2015-object-super --save
+npm install babel-plugin-transform-es2015-shorthand-properties --save
+npm install babel-plugin-transform-es2015-duplicate-keys --save
+npm install babel-plugin-transform-es2015-computed-properties --save
+npm install babel-plugin-transform-es2015-for-of --save
+npm install babel-plugin-transform-es2015-sticky-regex --save
+npm install babel-plugin-transform-es2015-unicode-regex --save
+npm install babel-plugin-check-es2015-constants --save
+npm install babel-plugin-transform-es2015-spread --save
+npm install babel-plugin-transform-es2015-parameters --save
+npm install babel-plugin-transform-es2015-destructuring --save
+npm install babel-plugin-transform-es2015-block-scoping --save
+npm install babel-plugin-transform-es2015-typeof-symbol --save
 ```

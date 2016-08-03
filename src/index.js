@@ -16,6 +16,11 @@ function getBabel() {
     return babel;
 }
 
+function readAndParse(path) {
+    return JSON.parse(stripJsonComments(
+        fs.readFileSync(path, readOptions)));
+}
+
 module.exports = {
     id: __filename,
     stream: false,
@@ -48,32 +53,39 @@ module.exports = {
             var rootPackage = lassoPackageRoot.getRootPackage(path.dirname(filename));
             var rootDir;
 
-            if (rootPackage.babel) {
-                // babel supports putting the babel config in the package's root `package.json`
-                // file. If we find that then we will enable the Babel transform for this package
-                babelOptions = Object.assign({}, rootPackage.babel);
-                rootDir = rootPackage.__dirname;
-            } else {
-                // Didn't find a babel config in the root `package.json` for the package so we will
-                // instead search up until we reach the root directory of the package
-                let curDir = path.dirname(filename);
-                while (true) {
-                    let babelrcPath = path.join(curDir, '.babelrc');
+            let curDir = path.dirname(filename);
 
-                    if (cachingFS.existsSync(path.join(curDir, '.babelrc'))) {
-                        var babelrcJson = stripJsonComments(fs.readFileSync(babelrcPath, readOptions));
-                        babelOptions = JSON.parse(babelrcJson);
-                        rootDir = curDir;
-                        break;
-                    } else if (curDir === rootPackage.__dirname) {
-                        break;
-                    } else {
-                        let parentDir = path.dirname(curDir);
-                        if (!parentDir || parentDir === curDir) {
+            while (true) {
+                let babelrcPath = path.join(curDir, '.babelrc');
+
+                // First we check for a .babelrc in the directory, if it exists,
+                // we read it and break. Otherwise, we fall back to looking for
+                // a package.json in the same directory with a "babel" key.
+                if (cachingFS.existsSync(babelrcPath)) {
+                    babelOptions = readAndParse(babelrcPath);
+                    rootDir = curDir;
+                    break;
+                } else {
+                    let packagePath = path.join(curDir, 'package.json');
+                    if (cachingFS.existsSync(packagePath)) {
+                        let packageJson = readAndParse(packagePath);
+
+                        if (packageJson.babel) {
+                            babelOptions = packageJson.babel;
+                            rootDir = curDir;
                             break;
                         }
-                        curDir = parentDir;
                     }
+                }
+
+                if (curDir === rootPackage.__dirname) {
+                    break;
+                } else {
+                    let parentDir = path.dirname(curDir);
+                    if (!parentDir || parentDir === curDir) {
+                        break;
+                    }
+                    curDir = parentDir;
                 }
             }
 

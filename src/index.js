@@ -57,11 +57,17 @@ module.exports = {
 
             while (true) {
                 let babelrcPath = path.join(curDir, '.babelrc');
+                let babelrcBrowserPath = path.join(curDir, '.babelrc-browser');
 
-                // First we check for a .babelrc in the directory, if it exists,
-                // we read it and break. Otherwise, we fall back to looking for
-                // a package.json in the same directory with a "babel" key.
-                if (cachingFS.existsSync(babelrcPath)) {
+                // First we check for a .babelrc-browser in the directory, if it
+                // exists, we read it and break. If not, we do the same for a
+                // .babelrc file. Otherwise, we fall back to looking for a
+                // package.json in the same directory with a "babel" key.
+                if (cachingFS.existsSync(babelrcBrowserPath)) {
+                    babelOptions = readAndParse(babelrcBrowserPath);
+                    rootDir = curDir;
+                    break;
+                } else if (cachingFS.existsSync(babelrcPath)) {
                     babelOptions = readAndParse(babelrcPath);
                     rootDir = curDir;
                     break;

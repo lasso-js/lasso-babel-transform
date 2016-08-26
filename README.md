@@ -88,3 +88,8 @@ npm install babel-plugin-transform-es2015-destructuring --save
 npm install babel-plugin-transform-es2015-block-scoping --save
 npm install babel-plugin-transform-es2015-typeof-symbol --save
 ```
+
+
+** Note: If for any reason you need to not use the default `.babelrc`, you can
+use a `.babelrc-browser` file which we will look for before searching looking up
+the default `.babelrc` file.

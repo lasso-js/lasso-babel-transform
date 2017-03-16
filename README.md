@@ -1,6 +1,6 @@
 # lasso-babel-transform
 
-Lasso.js transform that uses Babel to transpile ES6 code to ES5. This transform will only transpile code if there is a `.babelrc` found while traversing up to the root directory of the package that contains the JavaScript module file.
+Lasso.js transform that uses Babel to transpile ES6 code to ES5.
 
 ## Prerequisites
 
@@ -17,6 +17,13 @@ You will also need to install any babel plugins that you enable in your `.babelr
 
 ## Usage
 
+By default, this plugin will look for a `.babelrc` while traversing up the root directory of the packages and
+will transpile any files that have the `.js` or `.es6` extension. If a `.babelrc` file does not exist, it
+will attempt to look for a `.babelrc-browser` file. If neither of those files exist, this plugin will look in
+the `package.json` for a `babel` property.
+
+You can specify different file extensions with the `extensions` option in the transform's config (shown below).
+
 ```javascript
 require('lasso').configure({
     require: {
@@ -32,9 +39,32 @@ require('lasso').configure({
 });
 ```
 
+Alternatively, babel options can be provided directly via the config. **Note:** Specifying babel options directly
+will cause **all** files to be transpiled with these options (regardless of what is specified in the package's `.babelrc`,
+ `.babelrc-browser`, or `babel` property in the `package.json`).
+
+```javascript
+require('lasso').configure({
+    require: {
+        transforms: [
+            {
+                transform: 'lasso-babel-transform',
+                config: {
+                    // directly specify babel options
+                    babelOptions: {
+                        presets: [ "es2015" ]
+                    }
+                }
+            }
+        ]
+    }
+});
+```
+
 ## Configuring Babel
 
-You will want to put a `.babelrc` file at the root of each package that has any JavaScript files that should be transpiled by Babel. For example:
+You will want to put a `.babelrc` or `.babelrc-browser` file at the root of each package that has any JavaScript files that should
+be transpiled by Babel. For example:
 
 _my-module/.babelrc:_
 
@@ -65,7 +95,20 @@ _my-module/.babelrc:_
 }
 ```
 
-You will need to install any Babel plugins enabled in your `.babelrc` file. For example:
+As mentioned above, you can also opt to use the `babel` property to the `package.json`.
+
+_my-module/package.json:_
+```
+{
+    "name": "my-module",
+    ...
+    "babel": {
+        // babel config goes here
+    }
+}
+```
+
+You will need to install any Babel plugins enabled in your babel config. For example:
 
 ```bash
 npm install babel-plugin-transform-es2015-template-literals --save
@@ -89,7 +132,3 @@ npm install babel-plugin-transform-es2015-block-scoping --save
 npm install babel-plugin-transform-es2015-typeof-symbol --save
 ```
 
-
-** Note: If for any reason you need to not use the default `.babelrc`, you can
-use a `.babelrc-browser` file which we will look for before searching looking up
-the default `.babelrc` file.

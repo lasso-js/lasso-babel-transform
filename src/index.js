@@ -49,12 +49,15 @@ module.exports = {
 
             let babelOptions = transformConfig.babelOptions;
 
+            let rootPackage = lassoPackageRoot.getRootPackage(path.dirname(filename));
+
+
             if (babelOptions) {
                 babelOptions = Object.assign({}, babelOptions, {
-                    babelrc: false
+                    babelrc: false,
+                    filename: filename
                 });
             } else {
-                let rootPackage = lassoPackageRoot.getRootPackage(path.dirname(filename));
                 let rootDir;
 
                 let curDir = path.dirname(filename);
@@ -104,7 +107,7 @@ module.exports = {
                     return code;
                 }
 
-                babelOptions.filename = path.relative(rootDir, filename);
+                babelOptions.filename = filename;
                 babelOptions.babelrc = false;
             }
 

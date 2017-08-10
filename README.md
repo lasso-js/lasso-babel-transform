@@ -39,6 +39,8 @@ require('lasso').configure({
 });
 ```
 
+### Global babel options
+
 Alternatively, babel options can be provided directly via the config. **Note:** Specifying babel options directly
 will cause **all** files to be transpiled with these options (regardless of what is specified in the package's `.babelrc`,
  `.babelrc-browser`, or `babel` property in the `package.json`).

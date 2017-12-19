@@ -10,7 +10,7 @@ let babel;
 
 function getBabel() {
     if (!babel) {
-        babel = require('babel-core');
+        babel = require("babel-core");
     }
     return babel;
 }
@@ -50,17 +50,17 @@ module.exports = {
             let babelOptions = transformConfig.babelOptions;
 
             let rootPackage = lassoPackageRoot.getRootPackage(path.dirname(filename));
-
+            let curDir = process.cwd();
 
             if (babelOptions) {
                 babelOptions = Object.assign({}, babelOptions, {
                     babelrc: false,
-                    filename: filename
+                    filename: path.relative(curDir, filename)
                 });
             } else {
                 let rootDir;
 
-                let curDir = path.dirname(filename);
+                curDir = path.dirname(filename);
 
                 while (true) {
                     let babelrcPath = path.join(curDir, '.babelrc');
@@ -107,7 +107,7 @@ module.exports = {
                     return code;
                 }
 
-                babelOptions.filename = filename;
+                babelOptions.filename = path.relative(curDir, filename);
                 babelOptions.babelrc = false;
             }
 

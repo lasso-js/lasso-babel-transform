@@ -49,19 +49,11 @@ module.exports = {
 
             let babelOptions = transformConfig.babelOptions;
 
+            let curDir = path.dirname(filename);
             let rootPackage = lassoPackageRoot.getRootPackage(path.dirname(filename));
-            let curDir = process.cwd();
 
-            if (babelOptions) {
-                babelOptions = Object.assign({}, babelOptions, {
-                    babelrc: false,
-                    filename: path.relative(curDir, filename)
-                });
-            } else {
+            if (!babelOptions) {
                 let rootDir;
-
-                curDir = path.dirname(filename);
-
                 while (true) {
                     let babelrcPath = path.join(curDir, '.babelrc');
                     let babelrcBrowserPath = path.join(curDir, '.babelrc-browser');
@@ -106,11 +98,10 @@ module.exports = {
                     // No babel config... Don't do anything
                     return code;
                 }
-
-                babelOptions.filename = path.relative(curDir, filename);
-                babelOptions.babelrc = false;
             }
 
+            babelOptions.filename = path.relative(curDir, filename);
+            babelOptions.babelrc = false;
             let babel = getBabel();
 
             let result = babel.transform(code, babelOptions);

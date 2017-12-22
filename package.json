@@ -1,6 +1,6 @@
 {
   "name": "lasso-babel-transform",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Lasso.js transform that uses Babel to transpile ES6 code to ES5.",
   "main": "src/index.js",
   "scripts": {

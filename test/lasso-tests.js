@@ -13,7 +13,7 @@ describe('lasso-babel-transform', function() {
 
     require('./autotest').scanDir(
         nodePath.join(__dirname, 'autotests-lasso'),
-        function(dir, helpers, done) {
+        async function(dir, helpers, done) {
             var testName = nodePath.basename(dir);
             var outputDir = nodePath.join(buildDir, testName);
 
@@ -40,25 +40,20 @@ describe('lasso-babel-transform', function() {
                 'require-run: ' + nodePath.join(dir, 'client.js')
             ];
 
-            myLasso.lassoPage(lassoOptions, function(err, lassoPageResult) {
-                if (err) {
-                    return done(err);
-                }
+            const lassoPageResult = await myLasso.lassoPage(lassoOptions);
+            var modulesRuntimeGlobal = myLasso.config.modulesRuntimeGlobal;
 
-                var modulesRuntimeGlobal = myLasso.config.modulesRuntimeGlobal;
+            var sandbox = sandboxLoad(lassoPageResult, modulesRuntimeGlobal);
+            sandbox.$outputDir = lassoConfig.outputDir;
 
-                var sandbox = sandboxLoad(lassoPageResult, modulesRuntimeGlobal);
-                sandbox.$outputDir = lassoConfig.outputDir;
+            var check = require(nodePath.join(dir, 'test.js')).check;
 
-                var check = require(nodePath.join(dir, 'test.js')).check;
-
-                if (check.length === 2) {
-                    check(sandbox.window, done);
-                } else {
-                    check(sandbox.window);
-                    done();
-                }
-            });
+            if (check.length === 2) {
+                check(sandbox.window, done);
+            } else {
+                check(sandbox.window);
+                done();
+            }
         }
     );
 });

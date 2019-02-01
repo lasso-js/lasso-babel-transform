@@ -10,7 +10,7 @@ let babel;
 
 function getBabel() {
     if (!babel) {
-        babel = require("babel-core");
+        babel = require('@babel/core');
     }
     return babel;
 }
@@ -104,7 +104,13 @@ module.exports = {
             babelOptions.babelrc = false;
             let babel = getBabel();
 
-            let result = babel.transform(code, babelOptions);
+            let result = babel.transformSync(code, babelOptions);
+            if(result == null) {
+              // "ignore" and "only" disable ALL babel processing of a file
+              // e.g. => .babelrc = { "only": ["included/**"] }
+              // transform('excluded/foo.js') will return null
+              return code;
+            }
             return result.code;
         };
     }

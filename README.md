@@ -8,12 +8,15 @@ This transform requires Lasso v2+
 
 ## Installation
 
+> lasso 2.x/3.x, babel 7.x, lasso-babel-transform 2.x
 ```bash
-npm install lasso-babel-transform --save
+npm install lasso-babel-transform
 ```
 
-You will also need to install any babel plugins that you enable in your `.babelrc` file. For example:
-
+> lasso 2.x/3.x, babel 6.x, lasso-babel-transform 1.x
+```bash
+npm install lasso-babel-transform@1
+```
 
 ## Usage
 

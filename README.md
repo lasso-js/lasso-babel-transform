@@ -10,7 +10,7 @@ This transform requires Lasso v2+
 
 > lasso 2.x/3.x, babel 7.x, lasso-babel-transform 2.x
 ```bash
-npm install lasso-babel-transform
+npm install lasso-babel-transform @babel/core
 ```
 
 > lasso 2.x/3.x, babel 6.x, lasso-babel-transform 1.x

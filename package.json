@@ -16,19 +16,23 @@
   },
   "author": "lassojs",
   "license": "ISC",
+  "peerDependencies": {
+    "@babel/core": "^7",
+    "lasso": ">=2"
+  },
+  "dependencies": {
+    "lasso-caching-fs": "^1.0.1",
+    "lasso-package-root": "^1.0.0",
+    "strip-json-comments": "^2.0.1"
+  },
   "devDependencies": {
+    "@babel/core": "^7",
+    "@babel/polyfill": "^7.0.0",
+    "@babel/preset-env": "^7.2.0",
     "chai": "^3.5.0",
     "jshint": "^2.9.2",
     "lasso": "^3.2.9",
     "mocha": "^5.2.0"
-  },
-  "dependencies": {
-    "@babel/core": "^7.2.0",
-    "@babel/polyfill": "^7.0.0",
-    "@babel/preset-env": "^7.2.0",
-    "lasso-caching-fs": "^1.0.1",
-    "lasso-package-root": "^1.0.0",
-    "strip-json-comments": "^2.0.1"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"

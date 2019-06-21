@@ -100,7 +100,7 @@ module.exports = {
                 }
             }
 
-            babelOptions.filename = path.relative(curDir, filename);
+            babelOptions.filename = filename;
             babelOptions.babelrc = false;
             let babel = getBabel();
 

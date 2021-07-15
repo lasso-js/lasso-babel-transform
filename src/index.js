@@ -5,6 +5,8 @@ const cachingFS = require('lasso-caching-fs');
 const stripJsonComments = require('strip-json-comments');
 const lassoPackageRoot = require('lasso-package-root');
 const readOptions = { encoding: 'utf8' };
+const isDev = !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
+const caches = new WeakMap();
 
 let babel;
 
@@ -41,10 +43,23 @@ module.exports = {
 
         return function lassoBabelTransform(code, lassoContext) {
             let filename = lassoContext.filename;
+            let lasso = lassoContext.lasso;
+            let cache = !isDev && (
+                caches.get(lasso) || (() => {
+                    const cache = {};
+                    caches.set(lasso, cache);
+                    return cache
+                })()
+            );
+            let cachedCode;
 
             if (!filename || !extensions.hasOwnProperty(path.extname(filename))) {
                 // This shouldn't be the case
                 return code;
+            }
+
+            if (cache && (cachedCode = cache[filename])) {
+                return cachedCode;
             }
 
             let babelOptions = transformConfig.babelOptions;
@@ -104,14 +119,17 @@ module.exports = {
             babelOptions.filename = filename;
             babelOptions.babelrc = false;
             let babel = getBabel();
-
+            // console.log("babel file ==> ", curDir, babelOptions.filename);
             let result = babel.transformSync(code, babelOptions);
             if(result == null) {
               // "ignore" and "only" disable ALL babel processing of a file
               // e.g. => .babelrc = { "only": ["included/**"] }
               // transform('excluded/foo.js') will return null
+              cache && (cache[filename] = code);
               return code;
             }
+
+            cache && (cache[filename] = result.code);
             return result.code;
         };
     }

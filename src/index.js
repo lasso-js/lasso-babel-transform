@@ -66,6 +66,9 @@ module.exports = {
             let filename = lassoContext.filename;
             const ext = path.extname(filename);
 
+            let relativeFilename = filename;
+            if (loggerCacheDebugEnabled || logInfoEnabled) relativeFilename = path.relative(process.cwd(), filename);
+
             if (!filename || !extensions.hasOwnProperty(ext)) {
                 // This shouldn't be the case
                 return code;
@@ -88,7 +91,7 @@ module.exports = {
                     let cachedCode = cache[filename];
 
                     if (cachedCode) {
-                        if (loggerCacheDebugEnabled) loggerCache.debug('CACHE HIT (#' + cache.cacheNumber + '): ' + filename);
+                        if (loggerCacheDebugEnabled) loggerCache.debug('CACHE HIT (#' + cache.cacheNumber + '): ' + relativeFilename);
                         return cachedCode;
                     }
                 }
@@ -160,16 +163,16 @@ module.exports = {
               // "ignore" and "only" disable ALL babel processing of a file
               // e.g. => .babelrc = { "only": ["included/**"] }
               // transform('excluded/foo.js') will return null
-              if (logDebugEnabled) logger.debug('File ' + filename + ' was NOT compiled ( ' + ms + ' ms)');
+              if (logDebugEnabled) logger.debug('File "' + relativeFilename + '" was NOT compiled ( ' + ms + ' ms)');
               resultCode = code;
             } else {
-              if (logInfoEnabled)  logger.info('File ' + filename + ' was COMPILED ( ' + ms + ' ms)');
+              if (logInfoEnabled)  logger.info('File "' + relativeFilename + '" was COMPILED ( ' + ms + ' ms)');
               resultCode = result.code;
             }
 
-            if (cache) 
-                cache[filename] = resultCode;{
-                if (loggerCacheDebugEnabled) loggerCache.debug('File ' + filename + ' was CACHED(#' + cache.cacheNumber + ')');
+            if (cache) {
+                cache[filename] = resultCode;
+                if (loggerCacheDebugEnabled) loggerCache.debug('File "' + relativeFilename + '" was CACHED(#' + cache.cacheNumber + ')');
             }
             return resultCode;
         };

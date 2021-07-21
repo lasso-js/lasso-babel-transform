@@ -26,6 +26,8 @@ will attempt to look for a `.babelrc-browser` file. If neither of those files ex
 the `package.json` for a `babel` property.
 
 You can specify different file extensions with the `extensions` option in the transform's config (shown below).
+Files are cached in memory by default. You can use `memoryCachedExtensions` to remove caching on some files if you prefer.
+To save memory the cache is flushed after `idleCacheFlushTimeout` (default: 10 minutes).
 
 ```javascript
 require('lasso').configure({
@@ -34,7 +36,9 @@ require('lasso').configure({
             {
                 transform: 'lasso-babel-transform',
                 config: {
-                    extensions: ['.js', '.es6'] // Enabled file extensions. Default: ['.js', '.es6']
+                    extensions: ['.marko', '.js', '.es6'], // Enabled file extensions. Default: ['.js', '.es6']
+                    memoryCachedExtensions: ['.js', '.es6'], // Enabled memory caching for these file extensions. Default: same of 'extensions'
+                    idleCacheFlushTimeout: 20 * 60 * 1000, // FLushese the cache to save memory after 20 mins. Default 10 minutes.
                 }
             }
         ]
@@ -73,7 +77,7 @@ be transpiled by Babel. For example:
 
 _my-module/.babelrc:_
 
-```
+```javascript
 {
     "exclude": ["excluded/**"],
     "presets": [ "@babel/preset-env" ]
@@ -83,7 +87,7 @@ _my-module/.babelrc:_
 As mentioned above, you can also opt to use the `babel` property to the `package.json`.
 
 _my-module/package.json:_
-```
+```javascript
 {
     "name": "my-module",
     ...
@@ -99,3 +103,15 @@ You will need to install any Babel plugins enabled in your babel config. For exa
 npm install @babel/preset-env --save
 ```
 
+## Debugging
+
+Add this at the beginning of your main file:
+
+```javascript
+require('raptor-logging').configure({
+    loggers: {
+        'lasso-babel-transform': 'DEBUG', // or Info
+        'lasso-babel-transform/cache': 'DEBUG'
+    }
+});
+```

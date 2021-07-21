@@ -46,6 +46,15 @@ module.exports = {
 
         logger.info('These extensions will be CACHED: ' + JSON.stringify(memoryCachedExtensions));
 
+
+        const idleCacheFlushTimeout = transformConfig.idleCacheFlushTimeout || 10 * 60 * 1000;
+        if(!idleCacheFlushTimeout) { 
+            logger.info('The cache will NOT be flushed');
+        } else {
+            logger.info('The cache will be flush after ' + idleCacheFlushTimeout + ' ms of inactivity.');
+        }
+
+
         extensions = extensions.reduce((lookup, ext) => {
             if (ext.charAt(0) !== '.') {
                 ext = '.' + ext;
@@ -85,6 +94,14 @@ module.exports = {
                     cacheNumber++;
                     cache = { cacheNumber }; // Save the number of caches being created
                     caches.set(lasso, cache);
+                }
+
+                if (idleCacheFlushTimeout) {
+                    if (cache.timerId) clearTimeout(cache.timerId);
+                    cache.timerId = setTimeout(() => {
+                        loggerCache.debug('CACHE (#' + cache.cacheNumber + ') was FLUSHED after '  + idleCacheFlushTimeout + ' ms of inactivity.');
+                        caches.delete(lasso);
+                    }, idleCacheFlushTimeout);
                 }
 
                 if (cache) {
@@ -157,7 +174,7 @@ module.exports = {
             let resultCode;
 
             const start = Date.now();
-            let result = babel.transformSync(code, babelOptions);
+            const result = babel.transformSync(code, babelOptions);
             const ms = Date.now()  - start;
             if(result == null) {
               // "ignore" and "only" disable ALL babel processing of a file

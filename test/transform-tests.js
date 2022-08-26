@@ -21,8 +21,7 @@ describe('lasso-babel-transform', function() {
                 return output;
             }
 
-            test.test(transformWrapper, helpers);
-            done();
+            test.test(transformWrapper, helpers).then(() => done(), done);
         }
     );
 });

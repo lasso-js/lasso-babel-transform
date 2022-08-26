@@ -1,8 +1,8 @@
 var expect = require('chai').expect;
 
-exports.test = function(transform, helpers) {
-    expect(transform('excluded/foo.js')).to.not.equal(helpers.readFileSync('excluded/foo.js'));
-    expect(transform('excluded/subfolder/foo.js')).to.not.equal(helpers.readFileSync('excluded/subfolder/foo.js'));
-    expect(transform('included/foo.js')).to.not.equal(helpers.readFileSync('included/foo.js'));
-    expect(transform('excluded/excluded/foo.js')).to.equal(helpers.readFileSync('excluded/excluded/foo.js'));
+exports.test = async function(transform, helpers) {
+    expect(await transform('excluded/foo.js')).to.not.equal(helpers.readFileSync('excluded/foo.js'));
+    expect(await transform('excluded/subfolder/foo.js')).to.not.equal(helpers.readFileSync('excluded/subfolder/foo.js'));
+    expect(await transform('included/foo.js')).to.not.equal(helpers.readFileSync('included/foo.js'));
+    expect(await transform('excluded/excluded/foo.js')).to.equal(helpers.readFileSync('excluded/excluded/foo.js'));
 };

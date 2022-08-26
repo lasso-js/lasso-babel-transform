@@ -103,16 +103,11 @@ module.exports = {
 
             babelOptions.filename = filename;
             babelOptions.babelrc = false;
-            let babel = getBabel();
 
-            let result = babel.transformSync(code, babelOptions);
-            if(result == null) {
-              // "ignore" and "only" disable ALL babel processing of a file
-              // e.g. => .babelrc = { "only": ["included/**"] }
-              // transform('excluded/foo.js') will return null
-              return code;
-            }
-            return result.code;
+            // "ignore" and "only" disable ALL babel processing of a file
+            // e.g. => .babelrc = { "only": ["included/**"] }
+            // transform('excluded/foo.js') will return null
+            return getBabel().transformAsync(code, babelOptions).then(r => r ? r.code : code);
         };
     }
 };

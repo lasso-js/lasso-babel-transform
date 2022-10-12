@@ -5,6 +5,7 @@ const cachingFS = require('lasso-caching-fs');
 const stripJsonComments = require('strip-json-comments');
 const lassoPackageRoot = require('lasso-package-root');
 const readOptions = { encoding: 'utf8' };
+const markoRegistryFile = /\.marko\.(?:register|init)\.js$/;
 
 let babel;
 
@@ -24,28 +25,27 @@ module.exports = {
     id: __filename,
     stream: false,
     createTransform(transformConfig) {
+        const requestedExtensions = transformConfig.extensions;
+        const extensions = new Set();
 
-        let extensions = transformConfig.extensions;
-
-        if (!extensions) {
-            extensions = ['.js', '.es6'];
+        if (!requestedExtensions) {
+            extensions.add('.js');
+            extensions.add('.es6');
+        } else {
+            for (const ext of requestedExtensions) {
+                extensions.add(ext.charAt(0) !== '.' ? '.' + ext : ext);
+            }
         }
 
-        extensions = extensions.reduce((lookup, ext) => {
-            if (ext.charAt(0) !== '.') {
-                ext = '.' + ext;
-            }
-            lookup[ext] = true;
-            return lookup;
-        }, {});
+        const hasMarko = extensions.has(".marko");
 
         return function lassoBabelTransform(code, lassoContext) {
             let filename = lassoContext.filename;
-
-            if (!filename || !extensions.hasOwnProperty(path.extname(filename))) {
-                // This shouldn't be the case
-                return code;
-            }
+            if (!filename) return code;
+            
+            const ext = path.extname(filename);
+            if (!extensions.has(ext)) return code;
+            if (hasMarko && ext === ".js" && markoRegistryFile.test(filename)) return code;
 
             let babelOptions = transformConfig.babelOptions;
 
@@ -107,7 +107,12 @@ module.exports = {
             // "ignore" and "only" disable ALL babel processing of a file
             // e.g. => .babelrc = { "only": ["included/**"] }
             // transform('excluded/foo.js') will return null
-            return getBabel().transformAsync(code, babelOptions).then(r => r ? r.code : code);
+            try {
+                const r = getBabel().transformSync(code, babelOptions);
+                return r ? r.code : code;
+            } catch (err) {
+                return Promise.reject(err);
+            }
         };
     }
 };

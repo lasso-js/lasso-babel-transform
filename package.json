@@ -32,7 +32,7 @@
     "chai": "^3.5.0",
     "jshint": "^2.9.2",
     "lasso": "^3.2.9",
-    "mocha": "^5.2.0"
+    "mocha": "^10.2.0"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
